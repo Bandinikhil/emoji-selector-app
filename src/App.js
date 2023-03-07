@@ -1,42 +1,32 @@
-import React,{useState} from 'react'
-import TodoList from './TodoList'
-
+import React,{useState,useEffect} from 'react'
+import EmojiDtata from './emoji.json'
 const App = () => {
-  const [task,setTask] = useState("");
-  const [todos,setTodos] = useState([]);
+  const [search,setSearch] = useState("");
+  const [data,setData] = useState([]);
 
-  const changeHandler = e => {
-    setTask(e.target.value);
-  }
-  
-  const submitHandler = e => {
-    e.preventDefault();
-    const newTodos = [...todos,task]
-    setTodos(newTodos);
-    setTask("");
-  }
+  useEffect(()=>{
+   const newData = EmojiDtata.filter((emoji)=> emoji.title.toLowerCase().includes(search.toLowerCase()));
+   setData(newData);
 
-  
-  
-  
+  },[search])
   return (
-
-   
     <div>
       <center>
-      < div className='card'>
-        <div className='card-body'>
-          <div className='card-title'>Todo tasks</div>
-           <form onSubmit={submitHandler}> 
-            <input size="30" type="text" name="task" value={task} onChange={changeHandler}/> &nbsp;
-            <input type="submit" value="add" name="add"/>
-           </form>          
-          <TodoList todolist={todos} setTodos={setTodos}/>
+        <h1> Emoji Search</h1>
+        <input size="30" type="text" value={search} onChange={(e) => setSearch(e.target.value)} />
+        </center>
+        {data.map(emoji =>
+          <div className="card" key={emoji.title}>
+          <div className="card-body" onClick={() => {navigator.clipboard.writeText(emoji.symbol);alert("Emoji Copy")}}>
+            {emoji.symbol} {emoji.title}
+          </div>
         </div>
-      </div>
-      </center>
+        )}
+
     </div>
   )
 }
 
 export default App
+
+
